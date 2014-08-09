@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avro.codegen.CodeGen;
 
 namespace Avro
 {
@@ -41,6 +42,15 @@ namespace Avro
                 var list = str.Split(chrArray, StringSplitOptions.RemoveEmptyEntries).ToList();
                 GenSchema(list, args[2]);
                 Console.WriteLine("Complete.");
+            }
+            else if (args[0] == "-d")
+            {
+                var codegen = new AvroCodeGenerator();
+                codegen.Generate(args[1], args[2]);
+            }
+            else
+            {
+                Usage();
             }
         }
 
