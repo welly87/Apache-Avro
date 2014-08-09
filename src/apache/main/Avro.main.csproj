@@ -26,7 +26,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Avro</RootNamespace>
     <AssemblyName>Avro</AssemblyName>
-    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -89,6 +89,7 @@
     <Compile Include="CodeGen\CodeGen.cs" />
     <Compile Include="CodeGen\CodeGenException.cs" />
     <Compile Include="CodeGen\CodeGenUtil.cs" />
+    <Compile Include="CodeGen\StringExtensions.cs" />
     <Compile Include="File\Codec.cs" />
     <Compile Include="File\DataBlock.cs" />
     <Compile Include="File\DataFileConstants.cs" />
