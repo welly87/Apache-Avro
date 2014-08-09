@@ -583,7 +583,7 @@ namespace Avro
                 // Create field property with get and set methods
                 var property = new CodeMemberProperty();
                 property.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-                property.Name = mangledName;
+                property.Name = mangledName.FirstCharToUpper();
                 property.Type = ctrfield;
                 property.GetStatements.Add(new CodeMethodReturnStatement(fieldRef));
                 property.SetStatements.Add(new CodeAssignStatement(fieldRef, new CodePropertySetValueReferenceExpression()));
