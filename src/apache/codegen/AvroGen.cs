@@ -17,7 +17,7 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Avro
 {
@@ -34,23 +34,49 @@ namespace Avro
                 GenProtocol(args[1], args[2]);
             else if (args[0] == "-s")
                 GenSchema(args[1], args[2]);
-            else
-                Usage();
+            else if (args[0] == "-f")
+            {
+                var str = args[1];
+                var chrArray = new[] { ';' };
+                var list = str.Split(chrArray, StringSplitOptions.RemoveEmptyEntries).ToList();
+                GenSchema(list, args[2]);
+                Console.WriteLine("Complete.");
+            }
+        }
+
+        private static void GenSchema(IEnumerable<string> infile, string outdir)
+        {
+            try
+            {
+                var codeGen = new CodeGen();
+                var schemaName = new SchemaNames();
+                foreach (var str in infile)
+                {
+                    var schema = Schema.Parse(System.IO.File.ReadAllText(str), schemaName);
+                    schemaName.Add(schema as NamedSchema);
+                    codeGen.AddSchema(schema);
+                }
+                codeGen.GenerateCode();
+                codeGen.WriteTypes(outdir);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(string.Concat("Exception occurred. ", exception.Message));
+            }
         }
 
         static void Usage()
         {
             Console.WriteLine("Usage:\navrogen -p <protocolfile> <outputdir>\navrogen -s <schemafile> <outputdir>");
-            return;
         }
         static void GenProtocol(string infile, string outdir)
         {
             try
             {
                 string text = System.IO.File.ReadAllText(infile);
-                Protocol protocol = Protocol.Parse(text);
+                var protocol = Protocol.Parse(text);
 
-                CodeGen codegen = new CodeGen();
+                var codegen = new CodeGen();
                 codegen.AddProtocol(protocol);
 
                 codegen.GenerateCode();
@@ -65,10 +91,10 @@ namespace Avro
         {
             try
             {
-                string text = System.IO.File.ReadAllText(infile);
-                Schema schema = Schema.Parse(text);
+                var text = System.IO.File.ReadAllText(infile);
+                var schema = Schema.Parse(text);
 
-                CodeGen codegen = new CodeGen();
+                var codegen = new CodeGen();
                 codegen.AddSchema(schema);
 
                 codegen.GenerateCode();
