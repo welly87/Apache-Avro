@@ -149,11 +149,13 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <!--
   <ItemGroup>
     <EmbeddedResource Include="..\..\..\..\..\share\test\schemas\mail.avpr">
       <Link>Ipc\mail.avpr</Link>
     </EmbeddedResource>
   </ItemGroup>
+  -->
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
