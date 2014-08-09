@@ -597,14 +597,14 @@ namespace Avro
                 getFieldStmt.Append("\t\t\tcase ");
                 getFieldStmt.Append(field.Pos);
                 getFieldStmt.Append(": return this.");
-                getFieldStmt.Append(mangledName);
+                getFieldStmt.Append(privFieldName);
                 getFieldStmt.Append(";\n");
 
                 // add to Put()
                 putFieldStmt.Append("\t\t\tcase ");
                 putFieldStmt.Append(field.Pos);
                 putFieldStmt.Append(": this.");
-                putFieldStmt.Append(mangledName);
+                putFieldStmt.Append(privFieldName);
 
                 if (nullibleEnum)
                 {
