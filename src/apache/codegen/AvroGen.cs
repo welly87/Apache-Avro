@@ -77,7 +77,11 @@ namespace Avro
 
         static void Usage()
         {
-            Console.WriteLine("Usage:\navrogen -p <protocolfile> <outputdir>\navrogen -s <schemafile> <outputdir>");
+            Console.WriteLine("Usage:");
+            Console.WriteLine("avrogen -p <protocolfile> <outputdir>");
+            Console.WriteLine("avrogen -s <schemafile> <outputdir>");
+            Console.WriteLine("avrogen -f <schemafilelist (a.avsc;b.avsc)> <outputdir>");
+            Console.WriteLine("avrogen -d <schemadir> <outputdir>");
         }
         static void GenProtocol(string infile, string outdir)
         {
