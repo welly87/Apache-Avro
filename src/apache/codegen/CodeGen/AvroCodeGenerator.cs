@@ -31,20 +31,13 @@ namespace Avro.codegen.CodeGen
 
             foreach (var result in results)
             {
-                try
-                {
-                    Console.WriteLine("Start processing : {0}", result.Fullname);
+                Console.WriteLine("Start processing : {0}", result.Fullname);
 
-                    var scheme = Schema.Parse(result.Schema, schemaNames);
+                var scheme = Schema.Parse(result.Schema, schemaNames);
 
-                    schemaNames.Add((NamedSchema)scheme);
+                schemaNames.Add((NamedSchema)scheme);
 
-                    codegen.AddSchema(scheme);
-                }
-                catch (SchemaParseException e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+                codegen.AddSchema(scheme);
 
                 Console.WriteLine("Generate : {0}", result.Fullname);
             }

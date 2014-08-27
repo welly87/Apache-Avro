@@ -26,16 +26,16 @@ namespace Avro.codegen.CodeGen
                 {
                     var obj = (JObject) Type;
 
-                    var type = obj["type"].ToString();
-                    
-                    if (type == "map")
+                    var type = obj["type"].Value<string>();
+
+                    if (type.Equals("map"))
                     {
-                        var ty = obj["values"].ToString();
+                        var ty = obj["values"].Value<string>();
                         dependencies.Add(ty);
                     }
-                    else if (type == "array")
+                    else if (type.Equals("array"))
                     {
-                        var ty = obj["items"].ToString();
+                        var ty = obj["items"].Value<string>();
                         dependencies.Add(ty);
                     }
                 }

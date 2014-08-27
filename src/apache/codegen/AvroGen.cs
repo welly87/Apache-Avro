@@ -71,7 +71,8 @@ namespace Avro
             }
             catch (Exception exception)
             {
-                Console.WriteLine(string.Concat("Exception occurred. ", exception.Message));
+                //Console.WriteLine(string.Concat("Exception occurred. ", exception.Message));
+                throw new Exception(string.Concat("Exception occurred. ", exception.Message));
             }
         }
 
@@ -98,7 +99,7 @@ namespace Avro
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception occurred. " + ex.Message);
+                throw new Exception(string.Concat("Exception occurred. ", ex.Message));
             }
         }
         static void GenSchema(string infile, string outdir)
@@ -116,7 +117,7 @@ namespace Avro
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception occurred. " + ex.Message);
+                throw new Exception(string.Concat("Exception occurred. ", ex.Message));
             }
         }
     }

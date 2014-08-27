@@ -122,6 +122,10 @@
     <Compile Include="Utils\CaseFinderTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\codegen\Avro.codegen.csproj">
+      <Project>{bf0d313c-1aa3-4900-b277-b0f5f9ddcda8}</Project>
+      <Name>Avro.codegen</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ipc\Avro.ipc.csproj">
       <Project>{3b05043a-dc6c-49b6-85bf-9ab055d0b414}</Project>
       <Name>Avro.ipc</Name>
