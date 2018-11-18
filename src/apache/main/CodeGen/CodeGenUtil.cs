@@ -43,9 +43,7 @@ namespace Avro
             NamespaceImports = new CodeNamespaceImport[] {
                 new CodeNamespaceImport("System"),
                 new CodeNamespaceImport("System.Collections.Generic"),
-                new CodeNamespaceImport("System.Text"),
-                new CodeNamespaceImport("Avro"),
-                new CodeNamespaceImport("Avro.Specific") };
+                new CodeNamespaceImport("System.Text") };
 
             FileComment = new CodeCommentStatement(
 @"------------------------------------------------------------------------------

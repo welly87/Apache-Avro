@@ -256,12 +256,12 @@ namespace Avro
             CodeTypeDeclaration ctd = new CodeTypeDeclaration();
             ctd.Name = CodeGenUtil.Instance.Mangle(fixedSchema.Name);
             ctd.IsClass = true;
-            ctd.IsPartial = true;
+            //ctd.IsPartial = true;
             ctd.Attributes = MemberAttributes.Public;
-            ctd.BaseTypes.Add("SpecificFixed");
+            //ctd.BaseTypes.Add("SpecificFixed");
 
             // create static schema field
-            createSchemaField(schema, ctd, true);
+            //createSchemaField(schema, ctd, true);
 
             // Add Size field
             string sizefname = "fixedSize";
@@ -521,36 +521,36 @@ namespace Avro
 
             // declare the class
             var ctd = new CodeTypeDeclaration(CodeGenUtil.Instance.Mangle(recordSchema.Name));
-            ctd.BaseTypes.Add(isError ? "SpecificException" : "ISpecificRecord");
+            // ctd.BaseTypes.Add(isError ? "SpecificException" : "ISpecificRecord");
 
             ctd.Attributes = MemberAttributes.Public;
             ctd.IsClass = true;
-            ctd.IsPartial = true;
+            //ctd.IsPartial = true;
 
-            createSchemaField(schema, ctd, isError);
+            //createSchemaField(schema, ctd, isError);
 
-            // declare Get() to be used by the Writer classes
-            var cmmGet = new CodeMemberMethod();
-            cmmGet.Name = "Get";
-            cmmGet.Attributes = MemberAttributes.Public;
-            cmmGet.ReturnType = new CodeTypeReference("System.Object");
-            cmmGet.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "fieldPos"));
-            StringBuilder getFieldStmt = new StringBuilder("switch (fieldPos)\n\t\t\t{\n");
+            //// declare Get() to be used by the Writer classes
+            //var cmmGet = new CodeMemberMethod();
+            //cmmGet.Name = "Get";
+            //cmmGet.Attributes = MemberAttributes.Public;
+            //cmmGet.ReturnType = new CodeTypeReference("System.Object");
+            //cmmGet.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "fieldPos"));
+            //StringBuilder getFieldStmt = new StringBuilder("switch (fieldPos)\n\t\t\t{\n");
 
-            // declare Put() to be used by the Reader classes
-            var cmmPut = new CodeMemberMethod();
-            cmmPut.Name = "Put";
-            cmmPut.Attributes = MemberAttributes.Public;
-            cmmPut.ReturnType = new CodeTypeReference(typeof(void));
-            cmmPut.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "fieldPos"));
-            cmmPut.Parameters.Add(new CodeParameterDeclarationExpression("System.Object", "fieldValue"));
-            var putFieldStmt = new StringBuilder("switch (fieldPos)\n\t\t\t{\n");
+            //// declare Put() to be used by the Reader classes
+            //var cmmPut = new CodeMemberMethod();
+            //cmmPut.Name = "Put";
+            //cmmPut.Attributes = MemberAttributes.Public;
+            //cmmPut.ReturnType = new CodeTypeReference(typeof(void));
+            //cmmPut.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "fieldPos"));
+            //cmmPut.Parameters.Add(new CodeParameterDeclarationExpression("System.Object", "fieldValue"));
+            //var putFieldStmt = new StringBuilder("switch (fieldPos)\n\t\t\t{\n");
 
-            if (isError)
-            {
-                cmmGet.Attributes |= MemberAttributes.Override;
-                cmmPut.Attributes |= MemberAttributes.Override;
-            }
+            //if (isError)
+            //{
+            //    cmmGet.Attributes |= MemberAttributes.Override;
+            //    cmmPut.Attributes |= MemberAttributes.Override;
+            //}
 
             foreach (Field field in recordSchema.Fields)
             {
@@ -593,50 +593,79 @@ namespace Avro
                 // Add field property to class
                 ctd.Members.Add(property);
 
+                if (field.Schema.Tag == Schema.Type.Union) // union
+                {
+                    var unionSchema = (UnionSchema) field.Schema;
+                    
+                    var attr = new CodeAttributeDeclaration("Microsoft.Hadoop.Avro.AvroUnion");
+                    
+                    foreach (var item in unionSchema.Schemas)
+                    {
+                        var name = item.Name;
+
+                        if (name == "null")
+                        {
+                            name = "Microsoft.Hadoop.Avro.AvroNull";
+                        }
+                        else if (name == "bytes")
+                        {
+                            name = "byte[]";
+                        }
+                        else if (name == "boolean")
+                        {
+                            name = "bool";
+                        }
+
+                        attr.Arguments.Add(new CodeAttributeArgument(new CodeSnippetExpression(string.Format("typeof({0})", name))));
+                    }
+
+                    property.CustomAttributes.Add(attr);
+                }
+
                 // add to Get()
-                getFieldStmt.Append("\t\t\tcase ");
-                getFieldStmt.Append(field.Pos);
-                getFieldStmt.Append(": return this.");
-                getFieldStmt.Append(privFieldName);
-                getFieldStmt.Append(";\n");
+                //getFieldStmt.Append("\t\t\tcase ");
+                //getFieldStmt.Append(field.Pos);
+                //getFieldStmt.Append(": return this.");
+                //getFieldStmt.Append(privFieldName);
+                //getFieldStmt.Append(";\n");
 
-                // add to Put()
-                putFieldStmt.Append("\t\t\tcase ");
-                putFieldStmt.Append(field.Pos);
-                putFieldStmt.Append(": this.");
-                putFieldStmt.Append(privFieldName);
+                //// add to Put()
+                //putFieldStmt.Append("\t\t\tcase ");
+                //putFieldStmt.Append(field.Pos);
+                //putFieldStmt.Append(": this.");
+                //putFieldStmt.Append(privFieldName);
 
-                if (nullibleEnum)
-                {
-                    putFieldStmt.Append(" = fieldValue == null ? (");
-                    putFieldStmt.Append(baseType);
-                    putFieldStmt.Append(")null : (");
+                //if (nullibleEnum)
+                //{
+                //    putFieldStmt.Append(" = fieldValue == null ? (");
+                //    putFieldStmt.Append(baseType);
+                //    putFieldStmt.Append(")null : (");
 
-                    string type = baseType.Remove(0, 16);  // remove System.Nullable<
-                    type = type.Remove(type.Length - 1);   // remove >
+                //    string type = baseType.Remove(0, 16);  // remove System.Nullable<
+                //    type = type.Remove(type.Length - 1);   // remove >
 
-                    putFieldStmt.Append(type);
-                    putFieldStmt.Append(")fieldValue; break;\n");
-                }
-                else
-                {
-                    putFieldStmt.Append(" = (");
-                    putFieldStmt.Append(baseType);
-                    putFieldStmt.Append(")fieldValue; break;\n");
-                }
+                //    putFieldStmt.Append(type);
+                //    putFieldStmt.Append(")fieldValue; break;\n");
+                //}
+                //else
+                //{
+                //    putFieldStmt.Append(" = (");
+                //    putFieldStmt.Append(baseType);
+                //    putFieldStmt.Append(")fieldValue; break;\n");
+                //}
             }
 
-            // end switch block for Get()
-            getFieldStmt.Append("\t\t\tdefault: throw new AvroRuntimeException(\"Bad index \" + fieldPos + \" in Get()\");\n\t\t\t}");
-            var cseGet = new CodeSnippetExpression(getFieldStmt.ToString());
-            cmmGet.Statements.Add(cseGet);
-            ctd.Members.Add(cmmGet);
+            //// end switch block for Get()
+            //getFieldStmt.Append("\t\t\tdefault: throw new AvroRuntimeException(\"Bad index \" + fieldPos + \" in Get()\");\n\t\t\t}");
+            //var cseGet = new CodeSnippetExpression(getFieldStmt.ToString());
+            //cmmGet.Statements.Add(cseGet);
+            //ctd.Members.Add(cmmGet);
 
-            // end switch block for Put()
-            putFieldStmt.Append("\t\t\tdefault: throw new AvroRuntimeException(\"Bad index \" + fieldPos + \" in Put()\");\n\t\t\t}");
-            var csePut = new CodeSnippetExpression(putFieldStmt.ToString());
-            cmmPut.Statements.Add(csePut);
-            ctd.Members.Add(cmmPut);
+            //// end switch block for Put()
+            //putFieldStmt.Append("\t\t\tdefault: throw new AvroRuntimeException(\"Bad index \" + fieldPos + \" in Put()\");\n\t\t\t}");
+            //var csePut = new CodeSnippetExpression(putFieldStmt.ToString());
+            //cmmPut.Statements.Add(csePut);
+            //ctd.Members.Add(cmmPut);
 
             string nspace = recordSchema.Namespace;
             if (string.IsNullOrEmpty(nspace))
@@ -705,13 +734,13 @@ namespace Avro
                     if (null == arraySchema)
                         throw new CodeGenException("Unable to cast schema into an array schema");
 
-                    return "IList<" + getType(arraySchema.ItemSchema, false, ref nullibleEnum) + ">";
+                    return "List<" + getType(arraySchema.ItemSchema, false, ref nullibleEnum) + ">";
 
                 case Schema.Type.Map:
                     var mapSchema = schema as MapSchema;
                     if (null == mapSchema)
                         throw new CodeGenException("Unable to cast schema into a map schema");
-                    return "IDictionary<string," + getType(mapSchema.ValueSchema, false, ref nullibleEnum) + ">";
+                    return "Dictionary<string," + getType(mapSchema.ValueSchema, false, ref nullibleEnum) + ">";
 
                 case Schema.Type.Union:
                     var unionSchema = schema as UnionSchema;

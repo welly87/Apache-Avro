@@ -47,3 +47,4 @@
 .builds
 *.dotCover
 *.nupkg
+/.vs/Avro/v15/Server/sqlite3
